@@ -1,0 +1,9 @@
+Package: com.alf74486.deltamaster
+Name: DeltaMaster
+Depends: mobilesubstrate
+Version: 1.0
+Architecture: iphoneos-arm
+Description: Delta v7 Injector for Agar.io
+Maintainer: alf74486
+Author: alf74486
+Section: Tweaks
