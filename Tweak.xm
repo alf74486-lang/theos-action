@@ -9,7 +9,7 @@
 #include <regex>
 #include <cmath>
 
-‏struct Mode {
+struct Mode {
     std::string loader;
     std::function<std::string()> target;
     std::string path;
