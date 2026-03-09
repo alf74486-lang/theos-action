@@ -1,6 +1,7 @@
 #import <Foundation/Foundation.h>
 #import <WebKit/WebKit.h>
 #import <substrate.h> // المكتبة الأهم لعملية الـ Hooking
+#include <iostream>
 #include <string>
 #include <vector>
 #include <unordered_map>
