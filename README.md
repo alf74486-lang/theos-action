@@ -48,4 +48,4 @@ Feel free to submit any issues or pull requests.
 
 ## License
 
-This project is released under the [MIT License](LICENSE).
+This project is released under the [MIT License](LICENSE)..
