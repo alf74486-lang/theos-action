@@ -10,3 +10,4 @@ DeltaMaster_LIBRARIES = substrate
 DeltaMaster_CFLAGS = -fobjc-arc -std=c++11
 
 include $(THEOS_MAKE_PATH)/tweak.mk
+# Trigger Build
