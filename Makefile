@@ -7,7 +7,7 @@ TWEAK_NAME = DeltaMaster
 DeltaMaster_FILES = Tweak.x
 DeltaMaster_FRAMEWORKS = UIKit WebKit Foundation
 DeltaMaster_LIBRARIES = substrate
-DeltaMaster_CFLAGS = -fobjc-arc -std=c++11
+DeltaMaster_CFLAGS = -fobjc-arc
 
 include $(THEOS_MAKE_PATH)/tweak.mk
 # Trigger Build
