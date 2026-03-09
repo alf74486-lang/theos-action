@@ -5,7 +5,7 @@ include $(THEOS)/makefiles/common.mk
 
 TWEAK_NAME = DeltaMaster
 
-DeltaMaster_FILES = Tweak.xmm
+DeltaMaster_FILES = Tweak.xm
 DeltaMaster_CFLAGS = -fobjc-arc
 DeltaMaster_CCFLAGS = -std=c++11
 
