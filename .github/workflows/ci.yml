@@ -9,19 +9,34 @@ on:
 jobs:
   build:
     runs-on: macos-latest
+
     steps:
       - name: Checkout Your Files
         uses: actions/checkout@v4
 
-      - name: Prepare Theos
-        uses: randomblock1/theos-action@v1
+      # تثبيت Theos
+      - name: Install Theos
+        run: |
+          git clone --recursive https://github.com/theos/theos.git $HOME/theos
+          echo "THEOS=$HOME/theos" >> $GITHUB_ENV
 
+      # تثبيت الاعتمادات اللازمة
+      - name: Install Dependencies
+        run: |
+          brew install libtool automake autoconf pkg-config libxml2
+          brew install python3
+          brew install perl
+
+      # بناء التويك
       - name: Build Package
         run: |
           make package FINALPACKAGE=1
         env:
-          THEOS: ${{ github.workspace }}/theos
+          THEOS: $HOME/theos
+          THEOS_TOOLCHAIN: /usr/bin/clang
+          PATH: $HOME/theos/bin:$PATH
 
+      # رفع الحزمة
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
