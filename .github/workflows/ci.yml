@@ -25,22 +25,34 @@ jobs:
     - name: Verify Theos Installation
       run: |
         echo $THEOS
+        ls -l $THEOS
 
     # تثبيت الاعتمادات اللازمة
     - name: Install Dependencies
       run: |
         brew install libtool automake autoconf perl
         brew install python3
-        brew install perl
+        brew install clang
+        sudo xcode-select --switch /Applications/Xcode.app/Contents/Developer
 
-    # التحقق من تثبيت الأدوات
+    # التحقق من تثبيت الأدوات بنجاح
     - name: Verify Dependencies Installation
       run: |
         brew list libtool automake autoconf python3 perl
+        which clang
+        which make
 
-    # بناء الحزمة
-    - name: Build Package
+    # تحديد المسارات البيئية
+    - name: Set environment variables
       run: |
+        echo "THEOS=$HOME/theos" >> $GITHUB_ENV
+        echo "THEOS_TOOLCHAIN=/usr/bin/clang" >> $GITHUB_ENV
+        echo "PATH=$HOME/theos/bin:$PATH" >> $GITHUB_ENV
+
+    # تنظيف وإعادة بناء الحزمة
+    - name: Clean and Build Package
+      run: |
+        make clean
         make package FINALPACKAGE=1
       env:
         THEOS: $HOME/theos
