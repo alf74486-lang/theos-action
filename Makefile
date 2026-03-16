@@ -1,11 +1,10 @@
-# اسم التويك وملف التويك النهائي
 TWEAK_NAME = DeltaMaster
 TWEAK_FILES = Tweak.xm
 
 # تضمين ملفات ImGui و WebSocket و Metal و UIKit
 DEVELOPER = /Applications/Xcode.app/Contents/Developer
 SDKVERSION = 14.0
-THEOS = /path/to/theos  # اضبط المسار الصحيح لـ Theos هنا
+THEOS = /path/to/theos  # تأكد من ضبط المسار الصحيح لـ Theos هنا
 
 # تحديد الملفات التي سيتم تضمينها
 DeltaMaster_FILES = Tweak.xm easywsclient.cpp easywsclient.hpp imgui.cpp imgui_impl_ios.mm imgui_impl_metal.mm imgui_impl_ios.h imgui_impl_metal.h imgui.h
