@@ -1,17 +1,28 @@
 ARCHS = arm64
 TARGET = iphone:clang:latest:14.0
 
-include $(THEOS)/makefiles/common.mk
-
+# اسم التويك وملف التويك النهائي
 TWEAK_NAME = DeltaMaster
+TWEAK_FILES = Tweak.xm
 
-# التعديل هنا: أضفنا wildcard لقراءة كل ملفات ImGui والربط تلقائياً
-DeltaMaster_FILES = Tweak.xm easywsclient.cpp $(wildcard *.cpp) $(wildcard *.mm)
+# تضمين ملفات ImGui و WebSocket و Metal و UIKit
+DEVELOPER = /Applications/Xcode.app/Contents/Developer
+SDKVERSION = 14.0
+THEOS = /path/to/theos  # اضبط المسار الصحيح لـ Theos هنا
 
-# إضافة المكتبات اللازمة لظهور الواجهة (بدونها سيحدث كراش)
-DeltaMaster_FRAMEWORKS = UIKit Foundation Metal MetalKit QuartzCore
+# تحديد الملفات التي سيتم تضمينها
+DeltaMaster_FILES = Tweak.xm easywsclient.cpp easywsclient.hpp imgui.cpp imgui_impl_ios.mm imgui_impl_metal.mm imgui_impl_ios.h imgui_impl_metal.h imgui.h
 
-DeltaMaster_CFLAGS = -fobjc-arc -I.
-DeltaMaster_CCFLAGS = -std=c++11
+# تضمين مكتبات Metal و UIKit و C++ القياسية
+DeltaMaster_FRAMEWORKS = UIKit Foundation Metal QuartzCore
 
-include $(THEOS_MAKE_PATH)/tweak.mk
+# تمكين C++ لبناء ملف .dylib
+CFLAGS = -std=c++11
+CPPFLAGS = -std=c++11
+
+# لتمكين بناء ملفات .dylib
+LIBRARY_NAME = libDeltaMaster.dylib
+OUTPUT_FILE = /tmp/$(LIBRARY_NAME)
+
+# الأوامر الخاصة بالبناء
+include $(THEOS)/makefiles/common.mk
