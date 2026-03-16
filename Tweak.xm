@@ -18,16 +18,19 @@ int bot_count = 0;
 char bot_name[32] = "GeminiBot";
 bool is_connected = false;
 
-// --- 2. دالة إرسال الأوامر (تضيفها هنا) ---
-‏void SendCommandToServer(std::string command) {
-‏    if (!ws || ws->getReadyState() == WebSocket::CLOSED) {
-‏        ws = WebSocket::from_url(server_ip);
+void SendCommandToServer(std::string command) {
+
+    if (!ws || ws->getReadyState() == WebSocket::CLOSED) {
+        ws = WebSocket::from_url(server_ip);
     }
-‏    if (ws && ws->getReadyState() != WebSocket::CLOSED) {
-‏        ws->send(command);
-‏        ws->poll(); 
+    if (ws && ws->getReadyState() != WebSocket::CLOSED) {
+        // نرسل الأمر داخل صيغة JSON عشان السيرفر يفهمه
+        std::string jsonCommand = "{\"command\": \"" + command + "\"}";
+        ws->send(jsonCommand);
+        ws->poll(); 
     }
 }
+
 
 // رسم القائمة باستخدام ImGui
 void DrawMenu() {
