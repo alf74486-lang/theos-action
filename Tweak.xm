@@ -8,6 +8,7 @@
 #include "easywsclient.hpp"
 #include "imgui_impl_ios.h"
 #import <Metal/Metal.h>
+#import <UIKit/UIKit.h>
 #import <QuartzCore/QuartzCore.h>
 ‏using easywsclient::WebSocket;
 static WebSocket::pointer ws = nullptr; 
