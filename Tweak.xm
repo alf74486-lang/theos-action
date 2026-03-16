@@ -1,4 +1,5 @@
 #include <substrate.h>
+#include <mach-o/dyld.h>
 #include <iostream>
 #include <vector>
 #include <string>
