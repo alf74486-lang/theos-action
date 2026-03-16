@@ -1,6 +1,3 @@
-ARCHS = arm64
-TARGET = iphone:clang:latest:14.0
-
 # اسم التويك وملف التويك النهائي
 TWEAK_NAME = DeltaMaster
 TWEAK_FILES = Tweak.xm
