@@ -73,8 +73,9 @@ void DrawMenu() {
 }
 id<MTLRenderCommandEncoder> renderEncoder; // المحرك الذي سيرسم
 UIView* view; // الشاشة التي ستستقبل اللمس
+void (*old_Update)(void* instance);
 void new_Update(void* instance) {
-   void (*old_Update)(void* instance);
+   
 
 
     // 1. نحتاج الحصول على الـ View والـ RenderEncoder (يتم جلبهم من محرك اللعبة)
