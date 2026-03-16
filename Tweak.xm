@@ -10,7 +10,7 @@
 #import <Metal/Metal.h>
 #import <UIKit/UIKit.h>
 #import <QuartzCore/QuartzCore.h>
-‏using easywsclient::WebSocket;
+using easywsclient::WebSocket;
 static WebSocket::pointer ws = nullptr; 
 // متغيرات التحكم بالبوتات
 bool show_menu = true;
