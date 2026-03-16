@@ -77,7 +77,7 @@ void (*old_Update)(void* instance);
 void new_Update(void* instance) {
        old_Update(instance); 
 
-
+if (renderEncoder && view) {
     // 1. نحتاج الحصول على الـ View والـ RenderEncoder (يتم جلبهم من محرك اللعبة)
     // بفرض أننا حصلنا عليهم:
     ImGui_ImplMetal_NewFrame(renderEncoder); 
@@ -89,7 +89,7 @@ void new_Update(void* instance) {
     ImGui::Render();
     ImGui_ImplMetal_RenderDrawData(ImGui::GetDrawData(), renderEncoder);
 }
-
+}
 // نقطة الانطلاق عند تحميل الـ dylib
 __attribute__((constructor))
 static void initialize() {
