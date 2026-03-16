@@ -27,12 +27,12 @@ jobs:
         echo $THEOS
         ls -l $THEOS
 
-    # تثبيت الاعتمادات اللازمة
+    # تثبيت الأدوات المطلوبة
     - name: Install Dependencies
       run: |
         brew install libtool automake autoconf perl
         brew install python3
-        brew install clang
+        brew install llvm
         sudo xcode-select --switch /Applications/Xcode.app/Contents/Developer
 
     # التحقق من تثبيت الأدوات بنجاح
