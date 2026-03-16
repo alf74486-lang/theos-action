@@ -30,6 +30,7 @@ jobs:
     # تثبيت الأدوات المطلوبة
     - name: Install Dependencies
       run: |
+        brew update
         brew install libtool automake autoconf perl
         brew install python3
         brew install llvm
@@ -42,6 +43,8 @@ jobs:
         brew list libtool automake autoconf python3 perl
         which clang
         which make
+        clang --version
+        make --version
 
     # تحديد المسارات البيئية
     - name: Set environment variables
@@ -51,10 +54,10 @@ jobs:
         echo "PATH=$HOME/theos/bin:$PATH" >> $GITHUB_ENV
 
     # تنظيف وإعادة بناء الحزمة
-    - name: Clean and Build Package
+    - name: Clean and Build with verbose output
       run: |
         make clean
-        make package FINALPACKAGE=1
+        make package FINALPACKAGE=1 VERBOSE=1
       env:
         THEOS: $HOME/theos
         THEOS_TOOLCHAIN: /usr/bin/clang
