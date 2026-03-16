@@ -70,6 +70,8 @@ void DrawMenu() {
 
     ImGui::End();
 }
+id<MTLRenderCommandEncoder> renderEncoder; // المحرك الذي سيرسم
+UIView* view; // الشاشة التي ستستقبل اللمس
 void new_Update(void* instance) {
     old_Update(instance);
 
