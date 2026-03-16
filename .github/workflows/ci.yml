@@ -33,6 +33,7 @@ jobs:
         brew install libtool automake autoconf perl
         brew install python3
         brew install llvm
+        brew install make
         sudo xcode-select --switch /Applications/Xcode.app/Contents/Developer
 
     # التحقق من تثبيت الأدوات بنجاح
