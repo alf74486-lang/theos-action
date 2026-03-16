@@ -3,7 +3,13 @@
 #include <vector>
 #include <string>
 #include "imgui.h"
-
+‏#include "easywsclient.hpp" 
+#include "imgui_impl_metal.h"
+#include "imgui_impl_ios.h"
+#import <Metal/Metal.h>
+#import <QuartzCore/QuartzCore.h>
+‏using easywsclient::WebSocket;
+static WebSocket::pointer ws = nullptr; 
 // متغيرات التحكم بالبوتات
 bool show_menu = true;
 char server_ip[128] = "ws://127.0.0.1:8080";
@@ -11,11 +17,14 @@ int bot_count = 0;
 char bot_name[32] = "GeminiBot";
 bool is_connected = false;
 
-// وظائف التحكم (تُرسل كأوامر لسيرفر البوتات)
-void SendCommandToServer(std::string command) {
-    if (is_connected) {
-        // هنا يتم وضع منطق إرسال الأوامر عبر WebSocket
-        // مثال: "FEED", "SPLIT", "SCATTER"
+// --- 2. دالة إرسال الأوامر (تضيفها هنا) ---
+‏void SendCommandToServer(std::string command) {
+‏    if (!ws || ws->getReadyState() == WebSocket::CLOSED) {
+‏        ws = WebSocket::from_url(server_ip);
+    }
+‏    if (ws && ws->getReadyState() != WebSocket::CLOSED) {
+‏        ws->send(command);
+‏        ws->poll(); 
     }
 }
 
@@ -61,15 +70,19 @@ void DrawMenu() {
 
     ImGui::End();
 }
-
-// Hooking (حقن الكود داخل اللعبة)
-void (*old_Update)(void* instance);
 void new_Update(void* instance) {
-    // استدعاء الوظيفة الأصلية لتجنب الكراش
     old_Update(instance);
-    
-    // هنا يتم استدعاء رسم القائمة في كل Frame
-    DrawMenu();
+
+    // 1. نحتاج الحصول على الـ View والـ RenderEncoder (يتم جلبهم من محرك اللعبة)
+    // بفرض أننا حصلنا عليهم:
+    ImGui_ImplMetal_NewFrame(renderEncoder); 
+    ImGui_ImplIOS_NewFrame(view);
+    ImGui::NewFrame();
+
+    DrawMenu(); // استدعاء واجهتك
+
+    ImGui::Render();
+    ImGui_ImplMetal_RenderDrawData(ImGui::GetDrawData(), renderEncoder);
 }
 
 // نقطة الانطلاق عند تحميل الـ dylib
