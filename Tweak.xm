@@ -10,30 +10,30 @@
 #import <Metal/Metal.h>
 #import <UIKit/UIKit.h>
 #import <QuartzCore/QuartzCore.h>
+
 using easywsclient::WebSocket;
 static WebSocket::pointer ws = nullptr; 
-// متغيرات التحكم بالبوتات
+
+// --- متغيرات التحكم بالبوتات ---
 bool show_menu = true;
-char server_ip[128] = "ws://127.0.0.1:8080";
+char server_ip[128] = "ws://127.0.0.1:8080"; // آي بي اللابتوب حقك
 int bot_count = 0;
 char bot_name[32] = "GeminiBot";
+char party_key_input[32] = ""; // مكان تخزين رمز الغرفة (FNHRAY مثلاً)
 bool is_connected = false;
 
-void SendCommandToServer(std::string command) {
-
-  if (!ws || !ws->is_open()) {
-    ws = WebSocket::from_url(server_ip);
+// --- دالة إرسال البيانات للسيرفر ---
+void SendCommandToServer(std::string jsonPayload) {
+    if (!ws || ws->getReadyState() == WebSocket::CLOSED) {
+        ws = WebSocket::from_url(server_ip);
+    }
+    if (ws && ws->getReadyState() != WebSocket::CLOSED) {
+        ws->send(jsonPayload);
+        ws->poll();
+    }
 }
 
-if (ws && ws->is_open()) {
-    std::string jsonCommand = "{\"command\": \"" + command + "\"}";
-    ws->send(jsonCommand);
-    ws->poll();
-}
-}
-
-
-// رسم القائمة باستخدام ImGui
+// --- رسم القائمة باستخدام ImGui ---
 void DrawMenu() {
     if (!show_menu) return;
 
@@ -43,9 +43,18 @@ void DrawMenu() {
     ImGui::InputText("سيرفر البوتات", server_ip, IM_ARRAYSIZE(server_ip));
     ImGui::InputText("رمز الغرفة (Party)", party_key_input, IM_ARRAYSIZE(party_key_input));
 
-    if (ImGui::Button("اتصال بالسيرفر")) {
-        // منطق الاتصال
+    if (ImGui::Button("اتصال وتشغيل البوتات")) {
         is_connected = true;
+        
+        // بكرة بنحط الرابط الحقيقي هنا بعد ما نصيده بـ Frida
+        std::string game_url = "wss://REPLACE_WITH_REAL_URL"; 
+
+        // تجميع البيانات في رسالة JSON واحدة للسيرفر
+        std::string startCmd = "{\"command\": \"START_BOTS\", \"bot_count\": " + std::to_string(bot_count) + 
+                               ", \"server_url\": \"" + game_url + 
+                               "\", \"party_key\": \"" + std::string(party_key_input) + "\"}";
+        
+        SendCommandToServer(startCmd);
     }
 
     ImGui::Separator();
@@ -55,18 +64,18 @@ void DrawMenu() {
         ImGui::InputText("اسم البوتات", bot_name, IM_ARRAYSIZE(bot_name));
 
         ImGui::Spacing();
-        ImGui::Text("أوامر التحكم:");
+        ImGui::Text("أوامر التحكم السريع:");
 
         if (ImGui::Button("تفييد (Feed Me)")) {
-            SendCommandToServer("FEED");
+            SendCommandToServer("{\"command\": \"FEED\"}");
         }
         ImGui::SameLine();
         if (ImGui::Button("انقسام (Split)")) {
-            SendCommandToServer("SPLIT");
+            SendCommandToServer("{\"command\": \"SPLIT\"}");
         }
         
         if (ImGui::Button("توزيع (Scatter)")) {
-            SendCommandToServer("SCATTER");
+            SendCommandToServer("{\"command\": \"SCATTER\"}");
         }
 
         ImGui::SliderInt("عدد البوتات", &bot_count, 0, 1000);
@@ -76,29 +85,30 @@ void DrawMenu() {
 
     ImGui::End();
 }
-id<MTLRenderCommandEncoder> renderEncoder; // المحرك الذي سيرسم
-UIView* view; // الشاشة التي ستستقبل اللمس
+
+// --- ربط القائمة بمحرك الرسم (Metal) ---
+id<MTLRenderCommandEncoder> renderEncoder; 
+UIView* view; 
 void (*old_Update)(void* instance);
+
 void new_Update(void* instance) {
-       old_Update(instance); 
+    old_Update(instance); 
 
-if (renderEncoder && view) {
-    // 1. نحتاج الحصول على الـ View والـ RenderEncoder (يتم جلبهم من محرك اللعبة)
-    // بفرض أننا حصلنا عليهم:
-    ImGui_ImplMetal_NewFrame(renderEncoder); 
-    ImGui_ImplIOS_NewFrame(view);
-    ImGui::NewFrame();
+    if (renderEncoder && view) {
+        ImGui_ImplMetal_NewFrame(renderEncoder); 
+        ImGui_ImplIOS_NewFrame(view);
+        ImGui::NewFrame();
 
-    DrawMenu(); // استدعاء واجهتك
+        DrawMenu(); 
 
-    ImGui::Render();
-    ImGui_ImplMetal_RenderDrawData(ImGui::GetDrawData(), renderEncoder);
+        ImGui::Render();
+        ImGui_ImplMetal_RenderDrawData(ImGui::GetDrawData(), renderEncoder);
+    }
 }
-}
-// نقطة الانطلاق عند تحميل الـ dylib
+
+// --- نقطة انطلاق الـ dylib عند تشغيل اللعبة ---
 __attribute__((constructor))
 static void initialize() {
-    // استبدال دالة التحديث في محرك اللعبة (Unity/Cocos2d)
-    // العناوين تختلف حسب إصدار اللعبة
+    // بكرة بنطلع الـ Offset الحقيقي بدل الـ XXXXXX
     MSHookFunction((void*)0x100XXXXXX, (void*)&new_Update, (void**)&old_Update);
 }
