@@ -90,7 +90,7 @@ void DrawMenu() {
 id<MTLRenderCommandEncoder> renderEncoder; 
 UIView* view; 
 void (*old_Update)(void* instance);
-
+    if (ws) ws->poll();
 void new_Update(void* instance) {
     old_Update(instance); 
 
