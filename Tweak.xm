@@ -12,7 +12,7 @@
 #import <QuartzCore/QuartzCore.h>
 
 using easywsclient::WebSocket;
-static WebSocket::pointer ws = nullptr; 
+WebSocket::pointer ws = WebSocket::from_url("wss://web-production-8ade7.up.railway.app");
 
 // --- متغيرات التحكم بالبوتات ---
 bool show_menu = true;
