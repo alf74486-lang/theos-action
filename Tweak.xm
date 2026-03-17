@@ -41,7 +41,8 @@ void DrawMenu() {
 
     ImGui::Text("إعدادات الاتصال");
     ImGui::InputText("سيرفر البوتات", server_ip, IM_ARRAYSIZE(server_ip));
-    
+    ImGui::InputText("رمز الغرفة (Party)", party_key_input, IM_ARRAYSIZE(party_key_input));
+
     if (ImGui::Button("اتصال بالسيرفر")) {
         // منطق الاتصال
         is_connected = true;
