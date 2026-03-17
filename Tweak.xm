@@ -12,6 +12,10 @@
 #import <QuartzCore/QuartzCore.h>
 
 using easywsclient::WebSocket;
+
+// الخطأ الأول: يجب تعريف old_Update قبل استخدامه في دالة new_Update
+void (*old_Update)(void* instance);
+
 // الرابط الأساسي اللي عرفته أنت فوق
 WebSocket::pointer ws = WebSocket::from_url("wss://web-production-8ade7.up.railway.app");
 
@@ -105,11 +109,9 @@ void DrawMenu() {
 // --- ربط القائمة بمحرك الرسم (Metal) ---
 id<MTLRenderCommandEncoder> renderEncoder; 
 UIView* view; 
-// تعريف الـ pointer الأصلي (كان ناقص وسبب خطأ)
-void (*old_Update)(void* instance);
 
 void new_Update(void* instance) {
-    // نقلنا الـ poll لمكانها الصحيح داخل الدالة
+    // الخطأ الثاني: يجب أن يكون poll داخل الدالة ليعمل مع كل إطار
     if (ws) ws->poll(); 
 
     old_Update(instance); 
