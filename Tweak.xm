@@ -12,6 +12,7 @@
 #import <QuartzCore/QuartzCore.h>
 
 using easywsclient::WebSocket;
+// الرابط الأساسي اللي عرفته أنت فوق
 WebSocket::pointer ws = WebSocket::from_url("wss://web-production-8ade7.up.railway.app");
 
 // --- متغيرات التحكم بالبوتات ---
@@ -22,14 +23,29 @@ char bot_name[32] = "GeminiBot";
 char party_key_input[32] = ""; // مكان تخزين رمز الغرفة (FNHRAY مثلاً)
 bool is_connected = false;
 
-// --- دالة إرسال البيانات للسيرفر ---
+// --- دالة إرسال البيانات للسيرفر المحدثة ---
 void SendCommandToServer(std::string jsonPayload) {
+    // إذا كان الرابط المكتوب في المنيو مختلف عن الرابط الحالي، أغلق القديم وافتح الجديد
+    static std::string current_connected_ip = "";
+    
+    if (std::string(server_ip) != current_connected_ip) {
+        if (ws) {
+            ws->close();
+            ws = NULL;
+        }
+        current_connected_ip = std::string(server_ip);
+        ws = WebSocket::from_url(current_connected_ip);
+        printf("🔄 جاري التحويل إلى سيرفر جديد: %s\n", server_ip);
+    }
+
+    // التأكد من أن الاتصال قائم قبل الإرسال
     if (!ws || ws->getReadyState() == WebSocket::CLOSED) {
         ws = WebSocket::from_url(server_ip);
     }
+
     if (ws && ws->getReadyState() != WebSocket::CLOSED) {
         ws->send(jsonPayload);
-        ws->poll();
+        ws->poll(); // مهم جداً لمعالجة الإرسال
     }
 }
 
@@ -89,9 +105,13 @@ void DrawMenu() {
 // --- ربط القائمة بمحرك الرسم (Metal) ---
 id<MTLRenderCommandEncoder> renderEncoder; 
 UIView* view; 
+// تعريف الـ pointer الأصلي (كان ناقص وسبب خطأ)
 void (*old_Update)(void* instance);
-    if (ws) ws->poll();
+
 void new_Update(void* instance) {
+    // نقلنا الـ poll لمكانها الصحيح داخل الدالة
+    if (ws) ws->poll(); 
+
     old_Update(instance); 
 
     if (renderEncoder && view) {
